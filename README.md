@@ -77,14 +77,14 @@ triagebot/
 
 2. **Risk Assessment**:
    ```bash
-   curl -X POST http://localhost:8000/risk-assessment \
+   curl -X POST http://localhost:8000/triage/risk-assessment \
    -H "Content-Type: application/json" \
    -d '{"symptoms": {"fever": true, "cough": true}}'
    ```
 
 3. **Route Case**:
    ```bash
-   curl -X POST http://localhost:8000/route-case \
+   curl -X POST http://localhost:8000/triage/route-case \
    -H "Content-Type: application/json" \
    -d '{"risk_data": {"risk_level": "high"}}'
    ```
