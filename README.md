@@ -1,73 +1,96 @@
 # TriageBot
 
-## Overview
-
-TriageBot is an AI-powered virtual triage nurse system built with FastAPI. It leverages Crew AI agents to analyze patient symptoms, assess risk, and provide recommendations. The backend uses PostgreSQL for persistent storage and is fully containerized with Docker and Docker Compose.
-
-## Features
-
-- FastAPI backend with RESTful endpoints
-- Crew AI integration for risk assessment
-- Modular agent-based architecture
-- Persistent storage with PostgreSQL
-- Unit and integration tests
-- Dockerized deployment
-
-## Crew AI Integration
-
-The `RiskAssessmentAgent` uses Crew AI to analyze structured symptom data and provide risk assessment and likely conditions. The agent is defined in `src/agents/risk_assessment_agent.py` and is invoked via the `/triage/risk-assessment` API endpoint.
-
-## Setup
-
-### Prerequisites
-
-- Docker and Docker Compose installed
-
-### Running the Application
-
-```bash
-docker-compose up --build
-```
-
-The API will be available at [http://localhost:8000](http://localhost:8000).
-
-### API Documentation
-
-Once running, access Swagger UI at [http://localhost:8000/docs](http://localhost:8000/docs).
-
-## Testing
-
-To run all tests:
-
-```bash
-docker-compose exec app poetry run pytest
-```
+## Project Overview
+TriageBot is a FastAPI-based application designed to assist with symptom intake, risk assessment, and case routing. It leverages modern Python libraries and tools to provide a robust and scalable solution.
 
 ## Project Structure
+   ```bash
+triagebot/
+├── docker-compose.yml
+├── Dockerfile
+├── LICENSE
+├── poetry.lock
+├── pyproject.toml
+├── README.md
+├── virtual_triage.db
+├── scripts/
+│   ├── ollama-entrypoint.sh
+│   ├── test_llm.py
+├── src/
+│   ├── __init__.py
+│   ├── llm.py
+│   ├── logging_config.py
+│   ├── main.py
+│   ├── utils.py
+│   ├── agents/
+│   │   ├── agent_utils.py
+│   │   ├── risk_assessment_agent.py
+│   │   ├── routing_agent.py
+│   │   ├── symptom_intake_agent.py
+│   ├── api/
+│   │   ├── dependencies.py
+│   │   ├── endpoints/
+│   │   │   ├── auth.py
+│   │   │   ├── triage.py
+│   ├── auth/
+│   │   ├── security.py
+│   ├── db/
+│   │   ├── models.py
+│   │   ├── session.py
+├── tests/
+│   ├── integration/
+│   │   ├── __init__.py
+│   │   ├── test_api.py
+│   ├── unit/
+│   │   ├── __init__.py
+│   │   ├── test_agents.py
+   ```
+## Setup Instructions
+1. **Clone the Repository**:
+   ```bash
+   git clone <repository-url>
+   cd TriageBot
+   ```
 
-- `src/agents/`: AI agent implementations (Crew AI)
-- `src/api/`: FastAPI endpoints
-- `src/db/`: Database models and session
-- `tests/`: Unit and integration tests
+2. **Install Dependencies**:
+   - Using Poetry:
+     ```bash
+     poetry install
+     ```
 
-## Brief Report
+3. **Run the Application**:
+   - Using Docker Compose:
+     ```bash
+     docker-compose up --build
+     ```
 
-### What the project does
+4. **Access the Application**:
+   - The application will be available at `http://localhost:8000`.
 
-TriageBot collects patient symptoms, uses Crew AI to assess risk and suggest likely conditions, and routes cases accordingly.
+## Example cURL Commands
+1. **Symptom Intake**:
+   ```bash
+   curl -X POST http://localhost:8000/triage/symptom-intake \
+   -H "Content-Type: application/json" \
+   -d '{"raw_input": "I have a fever and cough."}'
+   ```
 
-### Implementation challenges
+2. **Risk Assessment**:
+   ```bash
+   curl -X POST http://localhost:8000/risk-assessment \
+   -H "Content-Type: application/json" \
+   -d '{"symptoms": {"fever": true, "cough": true}}'
+   ```
 
-- Integrating Crew AI required refactoring the risk assessment logic.
-- Ensuring Dockerized services (API, database, Ollama) communicate correctly.
-- Maintaining modular code for testability.
+3. **Route Case**:
+   ```bash
+   curl -X POST http://localhost:8000/route-case \
+   -H "Content-Type: application/json" \
+   -d '{"risk_data": {"risk_level": "high"}}'
+   ```
 
-### How challenges were solved
-
-- Used Crew AI's Agent, Task, and Crew abstractions for seamless integration.
-- Used Docker Compose for multi-service orchestration.
-- Wrote modular agents and comprehensive tests.
-
-## License
-
-MIT
+4. **Login**:
+   ```bash
+   curl -X POST http://localhost:8000/login \
+   -H "Content-Type: application/x-www-form-urlencoded" \
+   -d "username=your_username&password=your_password"
