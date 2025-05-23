@@ -21,7 +21,7 @@ until wget -qO- http://localhost:11434/api/tags > /dev/null 2>&1; do
 done
 
 # Pull the required model
-ollama pull gemma:2b
+ollama pull tinyllama
 
 # Bring Ollama server to foreground (wait on it)
 wait $OLLAMA_PID

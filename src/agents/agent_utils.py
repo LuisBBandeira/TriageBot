@@ -1,5 +1,5 @@
 from crewai import Agent, Task, Crew
-from src.llm import get_gemma2
+from src.llm import  get_llma_llm
 import json
 import logging
 
@@ -9,7 +9,7 @@ def run_agent_task(role, goal, backstory, prompt, expected_output):
     """
     try:
         # Get the LLM instance
-        llm = get_gemma2()
+        llm = get_llma_llm()
         
         agent = Agent(
             role=role,
