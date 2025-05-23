@@ -4,7 +4,7 @@
 TriageBot is a FastAPI-based application designed to assist with symptom intake, risk assessment, and case routing. It leverages modern Python libraries and tools to provide a robust and scalable solution.
 
 ## Project Structure
-   ```bash
+```bash
 triagebot/
 ├── docker-compose.yml
 ├── Dockerfile
@@ -44,7 +44,34 @@ triagebot/
 │   ├── unit/
 │   │   ├── __init__.py
 │   │   ├── test_agents.py
-   ```
+```
+
+## Code Structure
+- **Agents**: Implements core logic for symptom intake, risk assessment, and case routing.
+  - `SymptomIntakeAgent`: Collects symptoms from raw input.
+  - `RiskAssessmentAgent`: Assesses risk based on symptoms.
+  - `RoutingAgent`: Routes cases based on risk data.
+- **API**: Provides endpoints for interacting with the agents.
+- **Auth**: Handles user authentication and security, including password hashing and JWT-based token generation.
+- **Database**: Defines ORM models for `User`, `Patient`, and `TriageCase`.
+
+## Test Coverage
+- **Unit Tests**: Covers individual agent functionalities (`test_agents.py`).
+- **Integration Tests**: Validates API endpoints for symptom intake, risk assessment, and case routing (`test_api.py`).
+
+## Security Controls
+- Passwords are hashed using bcrypt.
+- JWT-based authentication is implemented with token expiration.
+- **Risks**:
+  - Hardcoded secret key should be replaced with an environment variable.
+  - Mock database should be replaced with a production-ready database.
+
+## Documentation Completeness
+The documentation provides:
+- Project overview and structure.
+- Setup instructions.
+- Example API usage.
+
 ## Setup Instructions
 1. **Clone the Repository**:
    ```bash
@@ -64,7 +91,13 @@ triagebot/
      docker-compose up --build
      ```
 
-4. **Access the Application**:
+4. **Run Tests**:
+   - Execute all tests using pytest:
+     ```bash
+     pytest
+     ```
+
+5. **Access the Application**:
    - The application will be available at `http://localhost:8000`.
 
 ## Example cURL Commands
@@ -72,25 +105,24 @@ triagebot/
    ```bash
    curl -X POST http://localhost:8000/triage/symptom-intake \
    -H "Content-Type: application/json" \
-   -d '{"raw_input": "I have a fever and cough."}'
+   'http://localhost:8000/triage/symptom-intake?raw_input=I%20have%20a%20headache%20and%20nausea' \
+   -d ''
    ```
 
 2. **Risk Assessment**:
    ```bash
-   curl -X POST http://localhost:8000/triage/risk-assessment \
-   -H "Content-Type: application/json" \
-   -d '{"symptoms": {"fever": true, "cough": true}}'
+   curl -X 'POST' \
+  'http://localhost:8000/triage/risk-assessment' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"symptoms": {"fever": true, "cough": true}}'
    ```
 
 3. **Route Case**:
    ```bash
-   curl -X POST http://localhost:8000/triage/route-case \
-   -H "Content-Type: application/json" \
-   -d '{"risk_data": {"risk_level": "high"}}'
+   curl -X 'POST' \
+  'http://localhost:8000/triage/route-case' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"risk_data": {"risk_level": "high"}}'
    ```
-
-4. **Login**:
-   ```bash
-   curl -X POST http://localhost:8000/login \
-   -H "Content-Type: application/x-www-form-urlencoded" \
-   -d "username=your_username&password=your_password"

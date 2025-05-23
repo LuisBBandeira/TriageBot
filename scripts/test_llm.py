@@ -1,8 +1,8 @@
-from src.llm import get_gemma2
+from src.llm import get_llma_llm
 from langchain.schema import HumanMessage
 
 def main():
-    llm = get_gemma2()
+    llm = get_llma_llm()
     prompt = "Say hello. Respond with a single word."
     messages = [HumanMessage(content=prompt)]
     
