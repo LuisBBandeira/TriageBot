@@ -1,0 +1,45 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+psycopg2://postgres:postgres@db:5432/triagebot
+    depends_on:
+      - db
+      - ollama
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: triagebot
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    environment:
+      - OLLAMA_MODELS=gemma:2b
+      - OLLAMA_HOST=0.0.0.0
+    entrypoint: ["/bin/sh", "/scripts/ollama-entrypoint.sh"]
+    volumes:
+      - ollama_data:/root/.ollama
+      - ./scripts:/scripts:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  ollama_data:
+  pgdata:
